@@ -26,9 +26,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 const (
@@ -70,11 +67,6 @@ const (
 	DefaultFormatVar = "DEFAULT_RESPONSE_FORMAT"
 )
 
-func init() {
-	prometheus.MustRegister(requestCount)
-	prometheus.MustRegister(requestDuration)
-}
-
 func main() {
 	errFilesPath := "/www"
 	if os.Getenv(ErrFilesPathVar) != "" {
@@ -86,15 +78,15 @@ func main() {
 		defaultFormat = os.Getenv(DefaultFormatVar)
 	}
 
-	http.HandleFunc("/", errorHandler(errFilesPath, defaultFormat))
+	mux := http.NewServeMux()
 
-	http.Handle("/metrics", promhttp.Handler())
+	mux.HandleFunc("/", errorHandler(errFilesPath, defaultFormat))
 
-	http.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
 
-	http.ListenAndServe(fmt.Sprintf(":8080"), nil)
+	http.ListenAndServe(fmt.Sprintf(":8080"), mux)
 }
 
 func errorHandler(path, defaultFormat string) func(http.ResponseWriter, *http.Request) {
