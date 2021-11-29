@@ -21,7 +21,7 @@ DIR:=$(strip $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST)))))
 INIT_BUILDX=$(DIR)/../../hack/init-buildx.sh
 
 TAG ?=v$(shell date +%m%d%Y)-$(shell git rev-parse --short HEAD)
-REGISTRY ?= local
+REGISTRY ?= fairewholesale
 
 IMAGE = $(REGISTRY)/nginx-errors
 
@@ -38,7 +38,7 @@ build: ensure-buildx
 		--platform=${PLATFORMS} $(OUTPUT) \
 		--progress=$(PROGRESS) \
 		--pull \
-		-t $(IMAGE):$(TAG) rootfs
+		-t $(IMAGE):latest rootfs
 
 # push the cross built image
 push: OUTPUT=--push
