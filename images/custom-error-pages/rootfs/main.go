@@ -131,6 +131,10 @@ func errorHandler(path, defaultFormat string) func(http.ResponseWriter, *http.Re
 			code = 404
 			log.Printf("unexpected error reading return code: %v. Using %v", err, code)
 		}
+		// Faire special logic: map custom 529 to standard 503
+		if code == 529 {
+			code = 503
+		}
 		w.WriteHeader(code)
 
 		if !strings.HasPrefix(ext, ".") {
