@@ -78,15 +78,13 @@ func main() {
 		defaultFormat = os.Getenv(DefaultFormatVar)
 	}
 
-	mux := http.NewServeMux()
+	http.HandleFunc("/", errorHandler(errFilesPath, defaultFormat))
 
-	mux.HandleFunc("/", errorHandler(errFilesPath, defaultFormat))
-
-	mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
 
-	http.ListenAndServe(fmt.Sprintf(":8080"), mux)
+	http.ListenAndServe(fmt.Sprintf(":8080"), nil)
 }
 
 func errorHandler(path, defaultFormat string) func(http.ResponseWriter, *http.Request) {
