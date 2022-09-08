@@ -38,7 +38,7 @@ build: ensure-buildx
 		--platform=${PLATFORMS} $(OUTPUT) \
 		--progress=$(PROGRESS) \
 		--pull \
-		-t $(IMAGE):latest rootfs
+		-t $(IMAGE):$(TAG) rootfs
 
 # push the cross built image
 push: OUTPUT=--push
