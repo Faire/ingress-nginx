@@ -134,6 +134,7 @@ func errorHandler(path, defaultFormat string) func(http.ResponseWriter, *http.Re
 		// Faire special logic: map custom 529 to standard 503
 		if code == 529 {
 			code = 503
+			log.Printf("mapping status code 529 to 503")
 		}
 		w.WriteHeader(code)
 
